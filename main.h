@@ -71,10 +71,6 @@ void dfs(graph &g, NodeType dest)
   dfsStack.push(0);
   int v;
   NodeType i = 0;
-  cout << "dest = " << dest << endl;
-  cout << "Nodes = " << g.numNodes() << endl;
-  cout << "stacksize = " << dfsStack.size() << endl;
-  cout << "top = " << dfsStack.top() << endl;
   while(!dfsStack.empty() && dfsStack.top() != dest)
   {
     v = dfsStack.top();
@@ -134,7 +130,10 @@ bool dfsr(graph &g, NodeType v, NodeType dest)
 }
 
 
-
+void solveMazeDFS(maze &m, graph &g)
+{
+  
+}
 
 void solveMazeDFSR(maze &m, graph &g)
 {
