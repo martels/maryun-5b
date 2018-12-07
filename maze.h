@@ -6,10 +6,17 @@
 #include "graph.h"
 #include <fstream>
 #include <iostream>
+#include <vector>
 #include <limits.h>
 #include <list>
 
 using namespace std;
+
+struct address
+{
+  int i;
+  int j;
+};
 
 class maze
 {
@@ -21,6 +28,9 @@ public:
 
   void setMap(int i, int j, int n);
   int getMap(int i, int j) const;
+  void pushNodeMap(int i, int j);
+  void setNodeMap(int n, int i, int j);
+  address getNodeMap(int n);
   void mapMazeToGraph(graph &g);
 
   int rows; // number of rows in the maze
@@ -28,6 +38,7 @@ public:
 
 private:
   matrix<bool> value;
+  vector<address> nodemap;
   matrix<int> map; // Mapping from maze (i,j) values to node index values
 };
 
@@ -35,12 +46,31 @@ void maze::setMap(int i, int j, int n)
 // Set mapping from maze cell (i,j) to graph node n.
 {
   map[i][j] = n;
+  return;
 }
 
-int maze ::getMap(int i, int j) const
+int maze::getMap(int i, int j) const
 // Return mapping of maze cell (i,j) in the graph.
 {
   return map[i][j];
+}
+
+void maze::pushNodeMap(int i, int j)
+{
+  address temp;
+  temp.i = i;
+  temp.j = j;
+
+  nodemap.push_back(temp);
+}
+
+void maze::setNodeMap(int n, int i, int j)
+{
+}
+
+address maze::getNodeMap(int n)
+{
+  return nodemap[n];
 }
 
 maze::maze(ifstream &fin)
@@ -64,6 +94,7 @@ maze::maze(ifstream &fin)
     }
 
   map.resize(rows, cols);
+  nodemap.resize(0);
 }
 
 void maze::print(int goalI, int goalJ, int currI, int currJ)
@@ -118,7 +149,7 @@ void maze::mapMazeToGraph(graph &g)
 // Create a graph g that represents the legal moves in the maze m.
 {
   int nodeindex = 0;
-  if(g.numNodes() || g.numEdges())
+  if (g.numNodes() || g.numEdges())
   {
     cout << "Unable to map graph. Graph is not empty." << endl;
     return;
@@ -130,10 +161,11 @@ void maze::mapMazeToGraph(graph &g)
       {
         g.addNode(0);
         setMap(i, j, nodeindex);
+        pushNodeMap(i, j);
         nodeindex++;
       }
     }
- 
+
   for (int i = 0; i < rows; i++)
     for (int j = 0; j < cols; j++)
     {
@@ -150,8 +182,8 @@ void maze::mapMazeToGraph(graph &g)
         g.addEdge(map[i][j], map[i][j + 1]);
     }
 
-    cout << "nodes = " << g.numNodes() << endl;
-    cout << "edges = " << g.numEdges() << endl;
+  cout << "nodes = " << g.numNodes() << endl;
+  cout << "edges = " << g.numEdges() << endl;
 }
 
 #endif

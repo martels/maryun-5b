@@ -28,7 +28,17 @@ int main()
     while (fin && fin.peek() != 'Z')
     {
       maze m(fin);
-      solveMaze(m, g);
+      m.mapMazeToGraph(g);
+      int dest = m.getMap(m.rows - 1, m.cols - 1);
+      cout << "destination = " <<  dest << endl;
+      dfs(g, dest);
+
+      cout << "path = " << endl;
+      while(!dfsStack.empty())
+      {
+        cout << dfsStack.top() << endl;
+        dfsStack.pop();
+      }
     }
   }
   catch (indexRangeError &ex)
